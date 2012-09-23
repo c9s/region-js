@@ -121,18 +121,15 @@ class RegionNode
     return this
 
   writeMeta: (path,args) ->
-    this.el.attr({
-      region_path: path,
-      region_args: JSON.stringify(args)
-    })
+    @el.data('path',path)
+    @el.data('args',args)
 
   # deparse meta from an element or from self._el
   deparseMeta: (el) ->
     if( ! el )
       el = this.el
-    path = el.attr('region_path')
-    args = el.attr('region_args')
-    args = if args then JSON.parse( args ) else { }
+    path = el.data('path')
+    args = el.data('args')
     return {
       path: path,
       args: args
@@ -250,27 +247,26 @@ class RegionNode
 
   getEl: () -> this.el
 
-  refresh: (callback) -> this._request( this.path , this.args , callback )
+  refresh: (callback) -> this._request( @path , @args , callback )
 
   refreshWith: (args, callback) ->
     newArgs = $.extend( {} , this.args,args)
     this.args = newArgs
     this.saveHistory()
-    this._request( this.path , newArgs , callback )
+    this._request( @path , newArgs , callback )
     this.save()
 
   load: (path,args,callback) ->
-    if path == null
-      path = this.path
-      args = args ? args : this.args
-    this.replace(path,args, callback )
+    path ||= @path
+    args ||= @args or {}
+    @replace(path,args, callback )
 
   replace: (path,args,callback) ->
-    this.saveHistory()
-    this.path = path
-    this.args = args
-    this.save()
-    this.refresh( callback )
+    @saveHistory()
+    @path = path
+    @args = args
+    @save()
+    @refresh( callback )
 
   # XXX: seems no use.
   of: () -> this.el
