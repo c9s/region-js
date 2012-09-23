@@ -62,7 +62,7 @@ class RegionNode
       else if isRegionNode( arg1 )
         return arg1
 
-      meta = this.deparseMeta( el )
+      meta = this.readData( el )
 
       # save attributes
       @path = if meta.path then meta.path else path
@@ -117,17 +117,15 @@ class RegionNode
 
   # write path, args into DOM element attributes
   save: () ->
-    this.writeMeta( this.path , this.args )
+    @writeData( @path , @args )
     return this
 
-  writeMeta: (path,args) ->
+  writeData: (path,args) ->
     @el.data('path',path)
     @el.data('args',args)
 
   # deparse meta from an element or from self._el
-  deparseMeta: (el) ->
-    if( ! el )
-      el = this.el
+  readData: (el) ->
     path = el.data('path')
     args = el.data('args')
     return {

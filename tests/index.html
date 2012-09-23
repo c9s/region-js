@@ -7,14 +7,6 @@
         <script src="../lib/coffee-script.js"> </script>
         <script src="../lib/jquery-1.8.2.min.js"> </script>
         <script type="text/coffeescript" src="../js/region.coffee"> </script>
-        <script type="text/coffeescript">
-            test 'region test', () ->
-              el = $('#testing-region')
-              ok el
-              r = el.asRegion()
-              ok r
-              # r.load 'region1.html', {} , () ->
-        </script>
     </head>
     <body>
         <div id="qunit">
@@ -23,5 +15,28 @@
         <div id="qunit-fixture">
             <div id="testing-region"> </div>
         </div>
+        <script type="text/coffeescript">
+            asyncTest 'region load test', () ->
+              expect(4)
+              el = $('#testing-region')
+              ok el
+              r = el.asRegion()
+              ok r
+
+              that = this
+              r.load 'region1.html', { a: 1 } , (html) ->
+                ok html
+                equal html,"Region1\n"
+                start()
+
+            asyncTest "region async test", () ->
+              expect(1)
+              el = $('#testing-region')
+              el.asRegion().replace 'region2.html',{},(html) ->
+                ok html
+                start()
+                
+
+        </script>
     </body>
 </html>
